@@ -1,28 +1,14 @@
 const express = require('express'); // importando express pro projeto
-const crypto = require('crypto') // importatndo bibloteca de crptografia 
-const connection = require('./database/connection'); // importando config bd
+const UserController = require('./controllers/UserController');
+const EquipController = require('./controllers/EquipController');
 
 const routes = express.Router(); //Desacoplando modulo de Rotas() na variavel router
 
-routes.get('/users', async (request, response) =>{
-  const users = await connection('users').select('*');
-  return response.json(users);
-});
+routes.get('/users', UserController.index);
+routes.post('/users', UserController.create);
 
-routes.post('/users', async (request,response) => {
-  const { name, email, password, setor } = request.body;
-  const id = crypto.randomBytes(4).toString('HEX');
-
-  await connection('users').insert({
-    id,
-    name,
-    email,
-    password,
-    setor,
-  })
-
-  return response.json({ id });
-
-});
+routes.get('/equips', EquipController.index);
+routes.post('/equips', EquipController.create);
+routes.delete('/equips/:id', EquipController.delete);
 
 module.exports = routes;
